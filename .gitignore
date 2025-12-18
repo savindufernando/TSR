@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# ML artifacts
+logs/
+outputs/
+checkpoints/
+*.tflite
+*.h5
+*.keras
+saved_model/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+

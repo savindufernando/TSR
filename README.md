@@ -1,0 +1,68 @@
+# Hybrid CNN + ViT Traffic Sign Recognition (GTSRB)
+
+This project trains a **hybrid MobileNetV2 (CNN) + Transformer encoder (ViT-like)** classifier for **German Traffic Sign Recognition Benchmark (GTSRB)**, and supports exporting an optimized **TensorFlow Lite** model for edge deployment.
+
+## 1) Dataset (KaggleHub)
+
+This code is written to work with the Kaggle dataset:
+
+```python
+import kagglehub
+
+path = kagglehub.dataset_download("meowmeowmeowmeowmeow/gtsrb-german-traffic-sign")
+print("Path to dataset files:", path)
+```
+
+The dataset folder typically contains a `Train/` directory (class subfolders `0..42`) and either:
+- `Test/` as class-subfolders, or
+- a `Test.csv` file listing image paths + labels.
+
+## 2) Install
+
+Create a virtual environment and install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+TensorFlow currently does not publish Windows wheels for Python `3.13+`. Use Python `3.10`, `3.11`, or `3.12` (recommended: `3.11`) to train/export this model.
+
+## 3) Train
+
+Download the dataset (requires KaggleHub auth) and train:
+
+```bash
+python scripts/download_dataset.py --out data
+python scripts/train.py --data "$(Get-Content data/dataset_path.txt)" --img-size 224 --batch-size 64 --epochs 50
+```
+
+If you’re on bash/zsh, use `--data "$(cat data/dataset_path.txt)"`.
+
+Outputs are written to `outputs/` by default (SavedModel + logs + metrics).
+
+## 4) Evaluate
+
+```bash
+python scripts/evaluate.py --data "$(Get-Content data/dataset_path.txt)" --model outputs/saved_model
+```
+
+This prints accuracy and per-class precision/recall/F1.
+
+## 5) Export to TensorFlow Lite
+
+Default dynamic-range optimization:
+
+```bash
+python scripts/export_tflite.py --saved-model outputs/saved_model --out outputs/model.tflite
+```
+
+Optional full integer quantization (needs a representative dataset):
+
+```bash
+python scripts/export_tflite.py --saved-model outputs/saved_model --out outputs/model_int8.tflite --int8 --data "$(Get-Content data/dataset_path.txt)"
+```
+
+## Notes
+
+- The “ViT” part is implemented as a **Transformer encoder over CNN feature-map tokens** (a common hybrid CNN+Transformer design) so you get both local features and global context while staying lightweight.
+- For real-time use, pair this classifier with a detector/ROI cropper (or use a pipeline that detects signs first, then classifies).
