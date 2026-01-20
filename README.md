@@ -38,6 +38,8 @@ python scripts/train.py --data "$(Get-Content data/dataset_path.txt)" --img-size
 
 If you’re on bash/zsh, use `--data "$(cat data/dataset_path.txt)"`.
 
+Use `--seed <int>` to set Python/NumPy/TensorFlow seeds for reproducible training runs (default: `1337`).
+
 Outputs are written to `outputs/` by default (SavedModel + logs + metrics).
 
 ## 4) Evaluate
