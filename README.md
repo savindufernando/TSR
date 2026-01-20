@@ -44,6 +44,8 @@ Outputs are written to `outputs/` by default (SavedModel + logs + metrics).
 
 Add `--cache` to keep train/val/test datasets in memory; this speeds up small experiments but requires enough RAM.
 
+Tune over- or under-confidence with `--label-smoothing <0..1>` (e.g., `0.1`); default is no smoothing.
+
 ## 4) Evaluate
 
 ```bash
