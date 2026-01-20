@@ -70,6 +70,16 @@ Optional full integer quantization (needs a representative dataset):
 python scripts/export_tflite.py --saved-model outputs/saved_model --out outputs/model_int8.tflite --int8 --data "$(Get-Content data/dataset_path.txt)"
 ```
 
+## 6) Quick inference (SavedModel)
+
+Run prediction for a single image with a SavedModel or `.keras` file:
+
+```bash
+python scripts/predict_image.py --model outputs/saved_model --image path/to/image.png --img-size 224 --class-names data/class_names.txt
+```
+
+`--class-names` is optional; if omitted, class indices are used.
+
 ## Notes
 
 - The “ViT” part is implemented as a **Transformer encoder over CNN feature-map tokens** (a common hybrid CNN+Transformer design) so you get both local features and global context while staying lightweight.
