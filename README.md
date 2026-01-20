@@ -17,6 +17,12 @@ The dataset folder typically contains a `Train/` directory (class subfolders `0.
 - `Test/` as class-subfolders, or
 - a `Test.csv` file listing image paths + labels.
 
+Summarize class counts quickly:
+
+```bash
+python scripts/summarize_dataset.py --data "$(Get-Content data/dataset_path.txt)"
+```
+
 ## 2) Install
 
 Create a virtual environment and install dependencies:
