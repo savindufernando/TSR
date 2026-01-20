@@ -42,6 +42,8 @@ Use `--seed <int>` to set Python/NumPy/TensorFlow seeds for reproducible trainin
 
 Outputs are written to `outputs/` by default (SavedModel + logs + metrics).
 
+Add `--cache` to keep train/val/test datasets in memory; this speeds up small experiments but requires enough RAM.
+
 ## 4) Evaluate
 
 ```bash
