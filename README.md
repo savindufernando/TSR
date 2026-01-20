@@ -80,6 +80,14 @@ python scripts/predict_image.py --model outputs/saved_model --image path/to/imag
 
 `--class-names` is optional; if omitted, class indices are used.
 
+## 7) Quick inference (TFLite)
+
+Run an exported `.tflite` model:
+
+```bash
+python scripts/predict_tflite.py --model outputs/model.tflite --image path/to/image.png --img-size 224 --class-names data/class_names.txt
+```
+
 ## Notes
 
 - The “ViT” part is implemented as a **Transformer encoder over CNN feature-map tokens** (a common hybrid CNN+Transformer design) so you get both local features and global context while staying lightweight.
