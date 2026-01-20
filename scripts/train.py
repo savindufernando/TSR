@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import tensorflow as tf
 
-from tsr.data import DatasetConfig, load_gtsrb_datasets
+from tsr.data import DatasetConfig, compute_class_weights, load_gtsrb_datasets
 from tsr.model import ModelConfig, build_hybrid_cnn_vit
 
 
@@ -26,6 +26,11 @@ def main() -> int:
         "--cache",
         action="store_true",
         help="Cache train/val/test datasets in memory (useful for smaller datasets).",
+    )
+    parser.add_argument(
+        "--use-class-weights",
+        action="store_true",
+        help="Compute class weights from Train/ and pass to model.fit (mitigates imbalance).",
     )
     args = parser.parse_args()
 
@@ -74,11 +79,16 @@ def main() -> int:
     ]
     (out_dir / "checkpoints").mkdir(parents=True, exist_ok=True)
 
+    class_weights = None
+    if args.use_class_weights:
+        class_weights = compute_class_weights(args.data, num_classes=num_classes)
+
     model.fit(
         train_ds,
         validation_data=val_ds,
         epochs=args.epochs,
         callbacks=callbacks,
+        class_weight=class_weights,
     )
 
     saved_model_dir = out_dir / "saved_model"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional, Tuple
@@ -187,6 +188,29 @@ def load_gtsrb_datasets(
     train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
     val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
     return train_ds, val_ds, test_ds, num_classes
+
+
+def compute_class_weights(dataset_root: str | Path, num_classes: Optional[int] = None) -> dict[int, float]:
+    train_dir = _find_train_dir(Path(dataset_root))
+    counts: Counter[int] = Counter()
+
+    for class_dir in train_dir.iterdir():
+        if not class_dir.is_dir():
+            continue
+        try:
+            cls_idx = int(class_dir.name)
+        except ValueError:
+            continue
+        image_count = len([p for p in class_dir.iterdir() if p.is_file()])
+        if image_count:
+            counts[cls_idx] = image_count
+
+    if not counts:
+        raise ValueError(f"No class folders with images were found under: {train_dir}")
+
+    total = sum(counts.values())
+    n_classes = num_classes or len(counts)
+    return {cls: total / (n_classes * count) for cls, count in counts.items()}
 
 
 def take_representative_batches(ds: tf.data.Dataset, max_batches: int = 100):
