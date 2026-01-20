@@ -46,6 +46,8 @@ Add `--cache` to keep train/val/test datasets in memory; this speeds up small ex
 
 Tune over- or under-confidence with `--label-smoothing <0..1>` (e.g., `0.1`); default is no smoothing.
 
+Mitigate class imbalance with `--use-class-weights`, which computes weights from the `Train/` folder and passes them to `model.fit`.
+
 ## 4) Evaluate
 
 ```bash
