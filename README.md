@@ -56,6 +56,8 @@ Mitigate class imbalance with `--use-class-weights`, which computes weights from
 
 Skip augmentation with `--no-augment` if you only want normalization applied to images.
 
+Speed up training on Ampere+ GPUs/CPUs by enabling automatic mixed precision: `--mixed-precision`.
+
 ## 4) Evaluate
 
 ```bash

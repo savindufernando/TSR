@@ -33,6 +33,11 @@ def main() -> int:
         help="Disable data augmentation (keeps only normalization).",
     )
     parser.add_argument(
+        "--mixed-precision",
+        action="store_true",
+        help="Enable mixed_float16 policy for faster training on supported GPUs/CPUs.",
+    )
+    parser.add_argument(
         "--use-class-weights",
         action="store_true",
         help="Compute class weights from Train/ and pass to model.fit (mitigates imbalance).",
@@ -46,6 +51,9 @@ def main() -> int:
     random.seed(args.seed)
     np.random.seed(args.seed)
     tf.keras.utils.set_random_seed(args.seed)
+
+    if args.mixed_precision:
+        tf.keras.mixed_precision.set_global_policy("mixed_float16")
 
     data_cfg = DatasetConfig(
         img_size=args.img_size,
