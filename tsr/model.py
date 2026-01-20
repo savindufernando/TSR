@@ -11,6 +11,7 @@ class ModelConfig:
     img_size: int = 224
     num_classes: int = 43
     backbone_trainable: bool = False
+    backbone_weights: Optional[str] = "imagenet"
     token_dim: int = 256
     num_heads: int = 4
     transformer_layers: int = 4
@@ -59,7 +60,7 @@ def build_hybrid_cnn_vit(config: Optional[ModelConfig] = None) -> tf.keras.Model
 
     backbone = tf.keras.applications.MobileNetV2(
         include_top=False,
-        weights="imagenet",
+        weights=config.backbone_weights,
         input_tensor=inputs,
     )
     backbone.trainable = bool(config.backbone_trainable)
