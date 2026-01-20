@@ -21,6 +21,11 @@ def main() -> int:
     parser.add_argument("--backbone-trainable", action="store_true")
     parser.add_argument("--out", type=str, default="outputs", help="Output folder.")
     parser.add_argument("--seed", type=int, default=1337, help="Random seed for reproducibility.")
+    parser.add_argument(
+        "--cache",
+        action="store_true",
+        help="Cache train/val/test datasets in memory (useful for smaller datasets).",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.out)
@@ -31,7 +36,12 @@ def main() -> int:
     np.random.seed(args.seed)
     tf.keras.utils.set_random_seed(args.seed)
 
-    data_cfg = DatasetConfig(img_size=args.img_size, batch_size=args.batch_size, seed=args.seed)
+    data_cfg = DatasetConfig(
+        img_size=args.img_size,
+        batch_size=args.batch_size,
+        seed=args.seed,
+        cache=bool(args.cache),
+    )
     train_ds, val_ds, test_ds, num_classes = load_gtsrb_datasets(args.data, data_cfg)
 
     model_cfg = ModelConfig(

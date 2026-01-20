@@ -16,6 +16,7 @@ class DatasetConfig:
     seed: int = 1337
     val_split: float = 0.15
     shuffle_buffer: int = 2048
+    cache: bool = False
 
 
 def _find_train_dir(dataset_root: Path) -> Path:
@@ -176,6 +177,12 @@ def load_gtsrb_datasets(
         val_ds = val_ds.map(_prep_eval, num_parallel_calls=tf.data.AUTOTUNE)
         if test_ds is not None:
             test_ds = test_ds.map(_prep_eval, num_parallel_calls=tf.data.AUTOTUNE)
+
+    if config.cache:
+        train_ds = train_ds.cache()
+        val_ds = val_ds.cache()
+        if test_ds is not None:
+            test_ds = test_ds.cache()
 
     train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
     val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
