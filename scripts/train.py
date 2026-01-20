@@ -28,6 +28,11 @@ def main() -> int:
         help="Cache train/val/test datasets in memory (useful for smaller datasets).",
     )
     parser.add_argument(
+        "--no-augment",
+        action="store_true",
+        help="Disable data augmentation (keeps only normalization).",
+    )
+    parser.add_argument(
         "--use-class-weights",
         action="store_true",
         help="Compute class weights from Train/ and pass to model.fit (mitigates imbalance).",
@@ -47,6 +52,7 @@ def main() -> int:
         batch_size=args.batch_size,
         seed=args.seed,
         cache=bool(args.cache),
+        augment=not bool(args.no_augment),
     )
     train_ds, val_ds, test_ds, num_classes = load_gtsrb_datasets(args.data, data_cfg)
 

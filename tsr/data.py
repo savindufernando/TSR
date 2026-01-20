@@ -18,6 +18,7 @@ class DatasetConfig:
     val_split: float = 0.15
     shuffle_buffer: int = 2048
     cache: bool = False
+    augment: bool = True
 
 
 def _find_train_dir(dataset_root: Path) -> Path:
@@ -163,11 +164,12 @@ def load_gtsrb_datasets(
 
     if apply_preprocessing:
         normalize = build_normalization()
-        augment = build_augmentation()
+        augment = build_augmentation() if config.augment else None
 
         def _prep_train(x: tf.Tensor, y: tf.Tensor):
             x = normalize(x)
-            x = augment(x)
+            if augment is not None:
+                x = augment(x)
             return x, y
 
         def _prep_eval(x: tf.Tensor, y: tf.Tensor):

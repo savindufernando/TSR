@@ -54,6 +54,8 @@ Tune over- or under-confidence with `--label-smoothing <0..1>` (e.g., `0.1`); de
 
 Mitigate class imbalance with `--use-class-weights`, which computes weights from the `Train/` folder and passes them to `model.fit`.
 
+Skip augmentation with `--no-augment` if you only want normalization applied to images.
+
 ## 4) Evaluate
 
 ```bash
