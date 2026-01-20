@@ -18,6 +18,7 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--epochs", type=int, default=50)
     parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--label-smoothing", type=float, default=0.0, help="Label smoothing factor.")
     parser.add_argument("--backbone-trainable", action="store_true")
     parser.add_argument("--out", type=str, default="outputs", help="Output folder.")
     parser.add_argument("--seed", type=int, default=1337, help="Random seed for reproducibility.")
@@ -53,7 +54,7 @@ def main() -> int:
 
     model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=args.lr),
-        loss="categorical_crossentropy",
+        loss=tf.keras.losses.CategoricalCrossentropy(label_smoothing=float(args.label_smoothing)),
         metrics=[
             "accuracy",
             tf.keras.metrics.Precision(name="precision"),
