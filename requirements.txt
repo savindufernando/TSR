@@ -2,3 +2,4 @@ tensorflow>=2.13; python_version < "3.13"
 numpy>=1.23
 scikit-learn>=1.2
 kagglehub>=0.2.5
+pytest>=7.4
