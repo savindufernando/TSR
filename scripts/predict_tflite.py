@@ -46,14 +46,21 @@ def main() -> int:
     parser.add_argument("--class-names", type=str, help="Optional text file with class names (one per line).")
     args = parser.parse_args()
 
-    interpreter = tf.lite.Interpreter(model_path=args.model)
+    model_path = Path(args.model)
+    image_path = Path(args.image)
+    if not model_path.exists():
+        raise SystemExit(f"Model not found: {model_path}")
+    if not image_path.exists():
+        raise SystemExit(f"Image not found: {image_path}")
+
+    interpreter = tf.lite.Interpreter(model_path=str(model_path))
     interpreter.allocate_tensors()
 
     input_details = interpreter.get_input_details()[0]
     output_details = interpreter.get_output_details()[0]
     class_names = _load_class_names(Path(args.class_names) if args.class_names else None)
 
-    img = _load_image(Path(args.image), args.img_size)
+    img = _load_image(image_path, args.img_size)
     input_tensor = _prepare_input(img, input_details)
 
     interpreter.set_tensor(input_details["index"], input_tensor)
@@ -66,6 +73,9 @@ def main() -> int:
 
     top_k = int(args.top_k)
     top_indices = preds.argsort()[-top_k:][::-1]
+
+    if class_names and len(class_names) != preds.shape[0]:
+        print(f"Warning: {len(class_names)} class names provided but model outputs {preds.shape[0]} classes.")
 
     print(f"Image: {args.image}")
     print(f"Model: {args.model}")
