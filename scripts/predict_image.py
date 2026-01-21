@@ -53,6 +53,11 @@ def main() -> int:
     if not image_path.exists():
         raise SystemExit(f"Image not found: {image_path}")
 
+    valid_suffixes = {".jpg", ".jpeg", ".png", ".bmp"}
+    if image_path.suffix.lower() not in valid_suffixes:
+        print(f"Warning: Image suffix '{image_path.suffix}' might not be supported. "
+              f"Expected one of: {valid_suffixes}")
+
     model = tf.keras.models.load_model(model_path, compile=False)
     class_names = _load_class_names(Path(args.class_names)) if args.class_names else []
 
