@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import argparse
+from pathlib import Path
 import numpy as np
 import tensorflow as tf
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, f1_score
 
 from tsr.data import DatasetConfig, load_gtsrb_datasets
 
