@@ -15,10 +15,10 @@ from tsr.model import ModelConfig, build_hybrid_cnn_vit
 def main() -> int:
     parser = argparse.ArgumentParser(description="Train Hybrid CNN+ViT model for GTSRB.")
     parser.add_argument("--data", type=str, required=True, help="Dataset root (contains Train/).")
-    parser.add_argument("--img-size", type=int, default=224)
-    parser.add_argument("--batch-size", type=int, default=64)
-    parser.add_argument("--epochs", type=int, default=50)
-    parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--img-size", type=int, default=224, help="Input image size (width and height).")
+    parser.add_argument("--batch-size", type=int, default=64, help="Training batch size.")
+    parser.add_argument("--epochs", type=int, default=50, help="Number of training epochs.")
+    parser.add_argument("--lr", type=float, default=3e-4, help="Initial learning rate.")
     parser.add_argument("--label-smoothing", type=float, default=0.0, help="Label smoothing factor.")
     parser.add_argument("--backbone-trainable", action="store_true")
     parser.add_argument("--out", type=str, default="outputs", help="Output folder.")
@@ -54,6 +54,12 @@ def main() -> int:
         type=int,
         default=3,
         help="Patience for ReduceLROnPlateau callback.",
+    )
+    parser.add_argument(
+        "--validation-freq",
+        type=int,
+        default=1,
+        help="How many training epochs to run before a validation run.",
     )
     args = parser.parse_args()
 
