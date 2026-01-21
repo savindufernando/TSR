@@ -40,6 +40,8 @@ def main() -> int:
                         help="Image size to resize to")
     parser.add_argument("--top-k", type=int, default=5,
                         help="How many top classes to display")
+    parser.add_argument("--threshold", type=float, default=0.01,
+                        help="Minimum confidence threshold to display a class")
     parser.add_argument("--class-names", type=str,
                         help="Optional text file with class names")
 
@@ -79,6 +81,8 @@ def main() -> int:
     print(f"Model: {args.model}")
 
     for rank, idx in enumerate(top_indices, start=1):
+        if probs[idx] < args.threshold:
+            continue
         name = class_names[idx] if idx < len(class_names) else f"class_{idx}"
         print(f"{rank}: {name} (idx={idx}) prob={probs[idx]:.4f}")
 
