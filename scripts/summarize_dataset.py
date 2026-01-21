@@ -57,7 +57,8 @@ def _print_counts(title: str, counts: Dict[str, int]):
     mean_count = total / len(counts)
     print(f"  min={min_count}, max={max_count}, mean={mean_count:.1f}")
     for name, count in sorted_items:
-        print(f"  {name}: {count}")
+        pct = (count / total) * 100
+        print(f"  {name:2}: {count:5} ({pct:5.2f}%)")
 
 
 def main() -> int:
