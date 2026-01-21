@@ -16,6 +16,8 @@ def main() -> int:
     parser.add_argument("--model", type=str, required=True, help="SavedModel directory or .keras file.")
     parser.add_argument("--img-size", type=int, default=224)
     parser.add_argument("--batch-size", type=int, default=64)
+
+    
     args = parser.parse_args()
 
     data_cfg = DatasetConfig(img_size=args.img_size, batch_size=args.batch_size)
