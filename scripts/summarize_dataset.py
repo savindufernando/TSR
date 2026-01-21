@@ -52,6 +52,10 @@ def _print_counts(title: str, counts: Dict[str, int]):
         sorted_items = sorted(counts.items(), key=lambda kv: int(kv[0]))
     except ValueError:
         sorted_items = sorted(counts.items(), key=lambda kv: kv[0])
+    min_count = min(counts.values())
+    max_count = max(counts.values())
+    mean_count = total / len(counts)
+    print(f"  min={min_count}, max={max_count}, mean={mean_count:.1f}")
     for name, count in sorted_items:
         print(f"  {name}: {count}")
 
@@ -62,6 +66,9 @@ def main() -> int:
     args = parser.parse_args()
 
     dataset_root = Path(args.data)
+    if not dataset_root.exists():
+        raise SystemExit(f"Dataset root not found: {dataset_root}")
+
     train_dir = _find_dir(dataset_root, ("Train", "train"))
     if train_dir is None:
         raise SystemExit(f"Could not find Train/ under {dataset_root}")
