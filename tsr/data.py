@@ -1,3 +1,6 @@
+"""
+Data loading and preprocessing utilities for the GTSRB dataset.
+"""
 from __future__ import annotations
 
 import csv
@@ -12,6 +15,7 @@ import tensorflow as tf
 
 @dataclass(frozen=True)
 class DatasetConfig:
+    """Configuration for data loading and preprocessing."""
     img_size: int = 224
     batch_size: int = 64
     seed: int = 1337
@@ -38,6 +42,7 @@ def _find_test_dir(dataset_root: Path) -> Optional[Path]:
 
 
 def build_augmentation() -> tf.keras.Model:
+    """Returns a Keras Sequential model for image augmentation."""
     return tf.keras.Sequential(
         [
             tf.keras.layers.RandomFlip("horizontal"),
