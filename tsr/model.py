@@ -8,6 +8,8 @@ import tensorflow as tf
 
 @dataclass(frozen=True)
 class ModelConfig:
+    """Configuration for the hybrid MobileNetV2 + Transformer classifier."""
+
     img_size: int = 224
     num_classes: int = 43
     backbone_trainable: bool = False
@@ -17,6 +19,19 @@ class ModelConfig:
     transformer_layers: int = 4
     mlp_dim: int = 512
     dropout: float = 0.1
+
+
+def _validate_config(config: ModelConfig) -> None:
+    if config.img_size <= 0:
+        raise ValueError("img_size must be positive.")
+    if config.num_classes <= 0:
+        raise ValueError("num_classes must be positive.")
+    if config.token_dim <= 0 or config.num_heads <= 0:
+        raise ValueError("token_dim and num_heads must be positive.")
+    if config.token_dim % config.num_heads != 0:
+        raise ValueError("token_dim must be divisible by num_heads.")
+    if not 0.0 <= config.dropout < 1.0:
+        raise ValueError("dropout must be in the range [0, 1).")
 
 
 def _transformer_encoder(
@@ -52,9 +67,9 @@ def _transformer_encoder(
 
 
 def build_hybrid_cnn_vit(config: Optional[ModelConfig] = None) -> tf.keras.Model:
+    """Builds a MobileNetV2 backbone paired with Transformer encoder blocks."""
     config = config or ModelConfig()
-    if config.token_dim % config.num_heads != 0:
-        raise ValueError("token_dim must be divisible by num_heads")
+    _validate_config(config)
 
     inputs = tf.keras.Input(shape=(config.img_size, config.img_size, 3), name="image")
 
