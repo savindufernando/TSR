@@ -7,6 +7,12 @@ from pathlib import Path
 def main() -> int:
     parser = argparse.ArgumentParser(description="Download GTSRB Kaggle dataset via kagglehub.")
     parser.add_argument("--out", type=str, default="data", help="Output folder (will be created).")
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default="meowmeowmeowmeowmeow/gtsrb-german-traffic-sign",
+        help="KaggleHub dataset slug.",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.out)
@@ -14,10 +20,10 @@ def main() -> int:
 
     import kagglehub
 
-    path = kagglehub.dataset_download("meowmeowmeowmeowmeow/gtsrb-german-traffic-sign")
-    print("KaggleHub downloaded dataset to:", path)
+    path = kagglehub.dataset_download(args.dataset)
+    print(f"KaggleHub downloaded dataset '{args.dataset}' to:", path)
     pointer = out_dir / "dataset_path.txt"
-    pointer.write_text(str(path), encoding="utf-8")
+    pointer.write_text(f"{path}\n", encoding="utf-8")
     print("Wrote dataset pointer:", pointer)
     print("Tip: pass this directory to training via --data (or read dataset_path.txt).")
     return 0
