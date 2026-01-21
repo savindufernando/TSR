@@ -42,6 +42,18 @@ def main() -> int:
         action="store_true",
         help="Compute class weights from Train/ and pass to model.fit (mitigates imbalance).",
     )
+    parser.add_argument(
+        "--early-stop-patience",
+        type=int,
+        default=10,
+        help="Patience for EarlyStopping callback.",
+    )
+    parser.add_argument(
+        "--reduce-lr-patience",
+        type=int,
+        default=3,
+        help="Patience for ReduceLROnPlateau callback.",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.out)
@@ -71,6 +83,19 @@ def main() -> int:
     )
     model = build_hybrid_cnn_vit(model_cfg)
 
+    def _safe_cardinality(ds: tf.data.Dataset | None) -> str:
+        if ds is None:
+            return "none"
+        card = tf.data.experimental.cardinality(ds).numpy()
+        return "unknown" if card < 0 else str(int(card))
+
+    print(
+        "Dataset batches -> "
+        f"train: {_safe_cardinality(train_ds)}, "
+        f"val: {_safe_cardinality(val_ds)}, "
+        f"test: {_safe_cardinality(test_ds)}"
+    )
+
     model.compile(
         optimizer=tf.keras.optimizers.Adam(learning_rate=args.lr),
         loss=tf.keras.losses.CategoricalCrossentropy(label_smoothing=float(args.label_smoothing)),
@@ -82,8 +107,16 @@ def main() -> int:
     )
 
     callbacks = [
-        tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True),
-        tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=3),
+        tf.keras.callbacks.EarlyStopping(
+            monitor="val_loss",
+            patience=args.early_stop_patience,
+            restore_best_weights=True,
+        ),
+        tf.keras.callbacks.ReduceLROnPlateau(
+            monitor="val_loss",
+            factor=0.5,
+            patience=args.reduce_lr_patience,
+        ),
         tf.keras.callbacks.ModelCheckpoint(
             filepath=str(out_dir / "checkpoints" / "best.keras"),
             monitor="val_loss",
