@@ -17,16 +17,23 @@ def main() -> int:
 
     args = parser.parse_args()
 
+    data_root = Path(args.data)
+    model_path = Path(args.model)
+    if not data_root.exists():
+        raise SystemExit(f"Dataset root not found: {data_root}")
+    if not model_path.exists():
+        raise SystemExit(f"Model not found: {model_path}")
+
     data_cfg = DatasetConfig(
         img_size=args.img_size,
         batch_size=args.batch_size,
     )
 
-    _, _, test_ds, num_classes = load_gtsrb_datasets(args.data, data_cfg)
+    _, _, test_ds, num_classes = load_gtsrb_datasets(data_root, data_cfg)
     if test_ds is None:
         raise SystemExit("No test set found (expected Test/ directory or Test.csv).")
 
-    model = tf.keras.models.load_model(args.model, compile=False)
+    model = tf.keras.models.load_model(model_path, compile=False)
 
     y_true: list[int] = []
     y_pred: list[int] = []
