@@ -29,6 +29,11 @@ def main() -> int:
 
     converter = tf.lite.TFLiteConverter.from_saved_model(str(saved_model_path))
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
+    # Allow fallback to SELECT_TF_OPS for layers not natively in TFLite (like some ViT ops)
+    converter.target_spec.supported_ops = [
+        tf.lite.OpsSet.TFLITE_BUILTINS,
+        tf.lite.OpsSet.SELECT_TF_OPS,
+    ]
 
     if args.int8:
         if not args.data:
