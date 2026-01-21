@@ -105,3 +105,8 @@ python scripts/predict_tflite.py --model outputs/model.tflite --image path/to/im
 
 - The “ViT” part is implemented as a **Transformer encoder over CNN feature-map tokens** (a common hybrid CNN+Transformer design) so you get both local features and global context while staying lightweight.
 - For real-time use, pair this classifier with a detector/ROI cropper (or use a pipeline that detects signs first, then classifies).
+
+## Acknowledgments
+
+- [GTSRB Dataset](https://benchmark.ini.rub.de/gtsrb_dataset.html)
+- Keras/TensorFlow team for MobileNetV2
