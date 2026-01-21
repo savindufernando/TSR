@@ -22,3 +22,4 @@ def test_model_output_shape():
     preds = model(dummy, training=False)
 
     assert preds.shape == (2, cfg.num_classes)
+    assert model.input_shape == (None, cfg.img_size, cfg.img_size, 3)
