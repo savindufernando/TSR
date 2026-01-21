@@ -45,16 +45,27 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    model = tf.keras.models.load_model(args.model, compile=False)
+    model_path = Path(args.model)
+    image_path = Path(args.image)
+
+    if not model_path.exists():
+        raise SystemExit(f"Model not found: {model_path}")
+    if not image_path.exists():
+        raise SystemExit(f"Image not found: {image_path}")
+
+    model = tf.keras.models.load_model(model_path, compile=False)
     class_names = _load_class_names(Path(args.class_names)) if args.class_names else []
 
-    image = _load_image(Path(args.image), args.img_size)
+    image = _load_image(image_path, args.img_size)
     logits = model(tf.expand_dims(image, 0), training=False)[0].numpy()
 
     if logits.ndim != 1:
         raise RuntimeError("Model output is not a 1D class vector.")
 
     probs = tf.nn.softmax(logits).numpy()
+
+    if class_names and len(class_names) != probs.shape[0]:
+        print(f"Warning: {len(class_names)} class names provided but model outputs {probs.shape[0]} classes.")
 
     top_k = min(int(args.top_k), probs.shape[0])
     top_indices = np.argsort(probs)[-top_k:][::-1]
