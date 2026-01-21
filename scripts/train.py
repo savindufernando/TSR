@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import random
+import time
 from pathlib import Path
 
 import numpy as np
@@ -130,6 +131,8 @@ def main() -> int:
     if args.use_class_weights:
         class_weights = compute_class_weights(args.data, num_classes=num_classes)
 
+    print("Training...")
+    start_time = time.time()
     model.fit(
         train_ds,
         validation_data=val_ds,
@@ -137,6 +140,8 @@ def main() -> int:
         callbacks=callbacks,
         class_weight=class_weights,
     )
+    duration = time.time() - start_time
+    print(f"Training completed in {duration:.2f} seconds.")
 
     saved_model_dir = out_dir / "saved_model"
     model.save(saved_model_dir)
