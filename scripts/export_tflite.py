@@ -10,12 +10,17 @@ from tsr.data import DatasetConfig, load_gtsrb_datasets, take_representative_bat
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export a SavedModel to TFLite.")
-    parser.add_argument("--saved-model", type=str, required=True, help="SavedModel directory.")
-    parser.add_argument("--out", type=str, required=True, help="Output .tflite path.")
-    parser.add_argument("--int8", action="store_true", help="Enable full integer quantization.")
-    parser.add_argument("--data", type=str, default=None, help="Dataset root (required for --int8).")
+    parser.add_argument("--saved-model", dest="saved_model", type=str, required=True,
+                        help="SavedModel directory")
+    parser.add_argument("--out", type=str, required=True,
+                        help="Output .tflite path")
+    parser.add_argument("--int8", action="store_true",
+                        help="Enable full integer quantization")
+    parser.add_argument("--data", type=str, default=None,
+                        help="Dataset root (required for --int8)")
     parser.add_argument("--img-size", type=int, default=224)
     parser.add_argument("--batch-size", type=int, default=64)
+
     args = parser.parse_args()
 
     converter = tf.lite.TFLiteConverter.from_saved_model(args.saved_model)
@@ -23,13 +28,22 @@ def main() -> int:
 
     if args.int8:
         if not args.data:
-            raise SystemExit("--data is required when using --int8 (representative dataset).")
+            raise SystemExit("--data is required when using --int8.")
+
         train_ds, _, _, _ = load_gtsrb_datasets(
             args.data,
-            DatasetConfig(img_size=args.img_size, batch_size=args.batch_size),
+            DatasetConfig(
+                img_size=args.img_size,
+                batch_size=args.batch_size,
+            ),
             apply_preprocessing=False,
         )
-        converter.representative_dataset = lambda: take_representative_batches(train_ds, max_batches=100)
+
+        def representative_dataset():
+            for batch in take_representative_batches(train_ds, max_batches=100):
+                yield [tf.cast(batch, tf.float32)]
+
+        converter.representative_dataset = representative_dataset
         converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
         converter.inference_input_type = tf.uint8
         converter.inference_output_type = tf.uint8
@@ -39,6 +53,7 @@ def main() -> int:
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_bytes(tflite_model)
+
     print("Wrote:", out_path)
     return 0
 
