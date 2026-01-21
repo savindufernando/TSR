@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import time
 from pathlib import Path
 from typing import List
 
@@ -64,7 +65,11 @@ def main() -> int:
     input_tensor = _prepare_input(img, input_details)
 
     interpreter.set_tensor(input_details["index"], input_tensor)
+    
+    start_time = time.time()
     interpreter.invoke()
+    latency = (time.time() - start_time) * 1000
+    
     preds = interpreter.get_tensor(output_details["index"])[0]
 
     if np.issubdtype(preds.dtype, np.integer):
@@ -83,6 +88,7 @@ def main() -> int:
         name = class_names[idx] if idx < len(class_names) else f"class_{idx}"
         prob = float(preds[idx])
         print(f"{rank}: {name} (idx={idx}) score={prob:.4f}")
+    print(f"Inference latency: {latency:.2f} ms")
     return 0
 
 
