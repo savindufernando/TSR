@@ -67,7 +67,8 @@ def main() -> int:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_bytes(tflite_model)
 
-    print("Wrote:", out_path)
+    print(f"Successfully exported TFLite model to: {out_path.absolute()}")
+    print(f"Model size: {out_path.stat().st_size / 1024 / 1024:.2f} MB")
     return 0
 
 
