@@ -5,6 +5,15 @@ A high-performance hybrid model for road sign classification.
 
 This project trains a **hybrid MobileNetV2 (CNN) + Transformer encoder (ViT-like)** classifier for **German Traffic Sign Recognition Benchmark (GTSRB)**, and supports exporting an optimized **TensorFlow Lite** model for edge deployment.
 
+## Table of Contents
+1. [Dataset](#1-dataset-kagglehub)
+2. [Install](#2-install)
+3. [Train](#3-train)
+4. [Evaluate](#4-evaluate)
+5. [Export to TFLite](#5-export-to-tensorflow-lite)
+6. [Quick inference (SavedModel)](#6-quick-inference-savedmodel)
+7. [Quick inference (TFLite)](#7-quick-inference-tflite)
+
 ## 1) Dataset (KaggleHub)
 
 This code is written to work with the Kaggle dataset:
