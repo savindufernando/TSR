@@ -1,6 +1,8 @@
 # Traffic Sign Recognition (GTSRB) with CNN + ViT
 A high-performance hybrid model for road sign classification.
 
+## Usage
+
 This project trains a **hybrid MobileNetV2 (CNN) + Transformer encoder (ViT-like)** classifier for **German Traffic Sign Recognition Benchmark (GTSRB)**, and supports exporting an optimized **TensorFlow Lite** model for edge deployment.
 
 ## 1) Dataset (KaggleHub)
