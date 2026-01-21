@@ -46,9 +46,10 @@ def build_augmentation() -> tf.keras.Model:
     return tf.keras.Sequential(
         [
             tf.keras.layers.RandomFlip("horizontal"),
-            tf.keras.layers.RandomRotation(0.08),
+            tf.keras.layers.RandomRotation(0.08),  # approx 28 degrees
             tf.keras.layers.RandomTranslation(0.08, 0.08),
             tf.keras.layers.RandomContrast(0.2),
+            # Add subtle Gaussian noise
             tf.keras.layers.Lambda(
                 lambda x: tf.clip_by_value(
                     x + tf.random.normal(tf.shape(x), mean=0.0, stddev=0.03), 0.0, 1.0
@@ -148,7 +149,10 @@ def load_gtsrb_datasets(
     dataset_root = Path(dataset_root)
 
     if not dataset_root.exists():
-        raise FileNotFoundError(f"Dataset root does not exist: {dataset_root}")
+        raise FileNotFoundError(
+            f"Dataset root directory not found at: {dataset_root.absolute()}. "
+            "Please ensure the path is correct and accessible."
+        )
 
     train_dir = _find_train_dir(dataset_root)
     train_ds = _dataset_from_directory(train_dir, config, subset="training")
