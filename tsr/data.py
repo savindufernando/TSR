@@ -76,6 +76,7 @@ def _dataset_from_directory(
         seed=config.seed,
         validation_split=config.val_split if subset in {"training", "validation"} else None,
         subset=subset,
+        interpolation="bilinear",
     )
 
 
@@ -141,12 +142,22 @@ def load_gtsrb_datasets(
     config = config or DatasetConfig()
     dataset_root = Path(dataset_root)
 
+    if not dataset_root.exists():
+        raise FileNotFoundError(f"Dataset root does not exist: {dataset_root}")
+
     train_dir = _find_train_dir(dataset_root)
     train_ds = _dataset_from_directory(train_dir, config, subset="training")
     val_ds = _dataset_from_directory(train_dir, config, subset="validation")
 
+    def _infer_num_classes_from_dir(path: Path) -> int:
+        class_dirs = [p for p in path.iterdir() if p.is_dir()]
+        numeric = [p for p in class_dirs if p.name.isdigit()]
+        if numeric:
+            return len(numeric)
+        return len(class_dirs)
+
     class_names = getattr(train_ds, "class_names", None) or []
-    num_classes = len(class_names) if class_names else 43
+    num_classes = len(class_names) if class_names else _infer_num_classes_from_dir(train_dir) or 43
 
     test_ds: Optional[tf.data.Dataset] = None
     test_dir = _find_test_dir(dataset_root)
@@ -155,12 +166,20 @@ def load_gtsrb_datasets(
         if has_class_subdirs:
             test_ds = _dataset_from_directory(test_dir, config, subset=None)
 
+    options = tf.data.Options()
+    options.experimental_deterministic = True
+    train_ds = train_ds.with_options(options)
+    val_ds = val_ds.with_options(options)
+
     if test_ds is None:
         csv_candidates = [dataset_root / "Test.csv", dataset_root / "test.csv"]
         for csv_path in csv_candidates:
             if csv_path.exists():
                 test_ds = _dataset_from_test_csv(dataset_root, csv_path, config, num_classes)
                 break
+
+    if test_ds is not None:
+        test_ds = test_ds.with_options(options)
 
     if apply_preprocessing:
         normalize = build_normalization()
