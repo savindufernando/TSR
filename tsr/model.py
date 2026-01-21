@@ -85,9 +85,7 @@ def build_hybrid_cnn_vit(config: Optional[ModelConfig] = None) -> tf.keras.Model
     backbone.trainable = bool(config.backbone_trainable)
 
     feature_map = backbone.output  # (B, H, W, C)
-    fm_h = feature_map.shape[1]
-    fm_w = feature_map.shape[2]
-    c = feature_map.shape[-1]
+    _, fm_h, fm_w, c = feature_map.shape
     if fm_h is None or fm_w is None or c is None:
         raise ValueError("Backbone feature map shape must be static; use a fixed img_size.")
 
@@ -120,4 +118,5 @@ def build_hybrid_cnn_vit(config: Optional[ModelConfig] = None) -> tf.keras.Model
     outputs = tf.keras.layers.Dense(config.num_classes, activation="softmax", name="pred")(x)
 
     model = tf.keras.Model(inputs=inputs, outputs=outputs, name="hybrid_mobilenetv2_transformer")
+    print(f"Built hybrid model with {model.count_params():,} parameters.")
     return model
