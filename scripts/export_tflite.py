@@ -23,15 +23,23 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    converter = tf.lite.TFLiteConverter.from_saved_model(args.saved_model)
+    saved_model_path = Path(args.saved_model)
+    if not saved_model_path.exists():
+        raise SystemExit(f"SavedModel not found: {saved_model_path}")
+
+    converter = tf.lite.TFLiteConverter.from_saved_model(str(saved_model_path))
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
 
     if args.int8:
         if not args.data:
             raise SystemExit("--data is required when using --int8.")
 
+        data_root = Path(args.data)
+        if not data_root.exists():
+            raise SystemExit(f"Dataset root not found: {data_root}")
+
         train_ds, _, _, _ = load_gtsrb_datasets(
-            args.data,
+            data_root,
             DatasetConfig(
                 img_size=args.img_size,
                 batch_size=args.batch_size,
@@ -41,7 +49,7 @@ def main() -> int:
 
         def representative_dataset():
             for batch in take_representative_batches(train_ds, max_batches=100):
-                yield [tf.cast(batch, tf.float32)]
+                yield [tf.cast(batch[0], tf.float32)]
 
         converter.representative_dataset = representative_dataset
         converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
