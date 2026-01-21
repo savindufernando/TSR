@@ -1,3 +1,6 @@
+"""
+Model architecture for the hybrid MobileNetV2 + Transformer classifier.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -43,6 +46,7 @@ def _transformer_encoder(
     dropout: float,
     name: str,
 ) -> tf.Tensor:
+    """Implement a single Transformer encoder block (MHA + MLP)."""
     attn_in = tf.keras.layers.LayerNormalization(epsilon=1e-6, name=f"{name}_ln1")(x)
     attn_out = tf.keras.layers.MultiHeadAttention(
         num_heads=num_heads,
