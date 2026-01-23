@@ -19,6 +19,7 @@ def _count_class_dirs(split_dir: Path) -> Dict[str, int]:
     for class_dir in split_dir.iterdir():
         if not class_dir.is_dir():
             continue
+        # Count all files in the class subdirectory
         counts[class_dir.name] = len([p for p in class_dir.iterdir() if p.is_file()])
     return counts
 
