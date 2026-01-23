@@ -49,6 +49,7 @@ def main() -> int:
 
     model_path = Path(args.model)
     image_path = Path(args.image)
+    print(f"Validating input image: {image_path}")
 
     if not model_path.exists():
         raise SystemExit(f"Model not found: {model_path}")
