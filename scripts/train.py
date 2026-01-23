@@ -72,7 +72,9 @@ def main() -> int:
     tf.keras.utils.set_random_seed(args.seed)
 
     if args.mixed_precision:
+        # mixed_float16 uses float16 for most compute but keeps float32 for master weights
         tf.keras.mixed_precision.set_global_policy("mixed_float16")
+        print("Mixed precision (float16) enabled.")
 
     data_cfg = DatasetConfig(
         img_size=args.img_size,
