@@ -32,7 +32,9 @@ def _validate_config(config: ModelConfig) -> None:
     if config.token_dim <= 0 or config.num_heads <= 0:
         raise ValueError("token_dim and num_heads must be positive.")
     if config.token_dim % config.num_heads != 0:
-        raise ValueError("token_dim must be divisible by num_heads.")
+        raise ValueError(
+            f"token_dim ({config.token_dim}) must be divisible by num_heads ({config.num_heads})."
+        )
     if not 0.0 <= config.dropout < 1.0:
         raise ValueError("dropout must be in the range [0, 1).")
 
