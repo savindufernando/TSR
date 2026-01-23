@@ -142,6 +142,7 @@ def main() -> int:
     print(f"Number of classes detected: {num_classes}")
     print(f"Model input shape: {model.input_shape}")
     print("Training...")
+    # Track wall-clock time for the entire training process
     start_time = time.time()
     model.fit(
         train_ds,
