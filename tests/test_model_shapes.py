@@ -14,7 +14,8 @@ def test_model_output_shape():
         transformer_layers=1,
         mlp_dim=128,
         dropout=0.0,
-        backbone_weights=None,  # avoid downloading ImageNet weights in tests
+        # Set weights=None to avoid downloading ImageNet weights during CI/testing
+        backbone_weights=None,
     )
     model = build_hybrid_cnn_vit(cfg)
 
