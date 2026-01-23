@@ -139,6 +139,7 @@ def main() -> int:
 
     print(f"Dataset root: {args.data}")
     print(f"Initial learning rate: {args.lr}")
+    print(f"Number of classes detected: {num_classes}")
     print("Training...")
     start_time = time.time()
     model.fit(
