@@ -137,6 +137,8 @@ def main() -> int:
     if args.use_class_weights:
         class_weights = compute_class_weights(args.data, num_classes=num_classes)
 
+    print(f"Dataset root: {args.data}")
+    print(f"Initial learning rate: {args.lr}")
     print("Training...")
     start_time = time.time()
     model.fit(
@@ -157,9 +159,7 @@ def main() -> int:
         results = model.evaluate(test_ds, verbose=2)
         print("Test metrics:", dict(zip(model.metrics_names, results)))
     else:
-        print(f"Dataset root: {args.data}")
-    print(f"Output directory: {out_dir}")
-    print(f"Initial learning rate: {args.lr}")
+        print("No test set detected; skipping test evaluation.")
     return 0
 
 
