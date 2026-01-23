@@ -63,6 +63,7 @@ def main() -> int:
 
     img = _load_image(image_path, args.img_size)
     input_tensor = _prepare_input(img, input_details)
+    print(f"Input tensor shape: {input_tensor.shape}")
 
     interpreter.set_tensor(input_details["index"], input_tensor)
     
