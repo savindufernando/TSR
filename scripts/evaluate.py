@@ -34,6 +34,7 @@ def main() -> int:
         raise SystemExit("No test set found (expected Test/ directory or Test.csv).")
 
     model = tf.keras.models.load_model(model_path, compile=False)
+    print(f"Model loaded with {model.output_shape[-1]} output classes.")
 
     y_true: list[int] = []
     y_pred: list[int] = []
