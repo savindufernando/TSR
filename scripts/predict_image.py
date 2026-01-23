@@ -62,6 +62,7 @@ def main() -> int:
               f"Expected one of: {valid_suffixes}")
 
     model = tf.keras.models.load_model(model_path, compile=False)
+    print(f"Model loaded successfully from: {model_path}")
     class_names = _load_class_names(Path(args.class_names)) if args.class_names else []
 
     image = _load_image(image_path, args.img_size)
