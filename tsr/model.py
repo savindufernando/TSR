@@ -114,6 +114,7 @@ def build_hybrid_cnn_vit(config: Optional[ModelConfig] = None) -> tf.keras.Model
             name=f"enc{i+1}",
         )
 
+    # epsilon=1e-6 is a common choice for Transformers
     x = tf.keras.layers.LayerNormalization(epsilon=1e-6, name="pre_head_ln")(x)
     x = tf.keras.layers.GlobalAveragePooling1D(name="token_gap")(x)
     x = tf.keras.layers.Dropout(config.dropout, name="head_dropout")(x)
