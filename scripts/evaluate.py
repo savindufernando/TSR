@@ -51,6 +51,9 @@ def main() -> int:
         y_pred.extend(preds.tolist())
         y_true.extend(labels.tolist())
 
+    print("\n" + "=" * 30)
+    print("Evaluation Results")
+    print("=" * 30)
     print("Accuracy:", accuracy_score(y_true, y_pred))
     print(
         classification_report(
