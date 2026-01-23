@@ -64,6 +64,8 @@ def main() -> int:
     tflite_model = converter.convert()
 
     out_path = Path(args.out)
+    if out_path.suffix.lower() != ".tflite":
+        print(f"Warning: Output path '{out_path}' does not end with .tflite")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_bytes(tflite_model)
 
