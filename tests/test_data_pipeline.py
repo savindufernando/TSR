@@ -14,6 +14,7 @@ def _write_png(path: Path, size: int = 32):
 
 
 def test_load_gtsrb_datasets(tmp_path):
+    # Set up a mock dataset structure: 2 classes (0, 1) in Train/ and 1 in Test/
     dataset_root = tmp_path / "dataset"
     for cls in ("0", "1"):
         cls_dir = dataset_root / "Train" / cls
