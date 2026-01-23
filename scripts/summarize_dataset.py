@@ -88,6 +88,7 @@ def main() -> int:
 
     print(f"Dataset: {dataset_root}")
     _print_counts("Train", train_counts)
+    print()
     _print_counts("Test", test_counts)
     return 0
 
