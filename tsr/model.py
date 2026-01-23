@@ -16,7 +16,9 @@ class ModelConfig:
     img_size: int = 224
     num_classes: int = 43
     backbone_trainable: bool = False
+    """Whether to fine-tune the backbone (MobileNetV2)."""
     backbone_weights: Optional[str] = "imagenet"
+    """Weights to initialize the backbone with. e.g. 'imagenet' or None."""
     token_dim: int = 256
     num_heads: int = 4
     transformer_layers: int = 4
