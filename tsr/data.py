@@ -185,6 +185,7 @@ def load_gtsrb_datasets(
         csv_candidates = [dataset_root / "Test.csv", dataset_root / "test.csv"]
         for csv_path in csv_candidates:
             if csv_path.exists():
+                print(f"Loading test dataset from CSV: {csv_path}")
                 test_ds = _dataset_from_test_csv(dataset_root, csv_path, config, num_classes)
                 break
 
