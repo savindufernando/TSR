@@ -55,6 +55,7 @@ def main() -> int:
         raise SystemExit(f"Image not found: {image_path}")
 
     interpreter = tf.lite.Interpreter(model_path=str(model_path))
+    # Pre-allocate memory for input and output tensors
     interpreter.allocate_tensors()
 
     input_details = interpreter.get_input_details()[0]
