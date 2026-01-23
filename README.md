@@ -1,4 +1,4 @@
-# Traffic Sign Recognition (GTSRB) with CNN + ViT
+# Hybrid CNN + Transformer (ViT) Traffic Sign Recognition
 A high-performance hybrid model for road sign classification.
 
 ## Usage
