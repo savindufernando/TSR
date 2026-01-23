@@ -61,6 +61,7 @@ def build_augmentation() -> tf.keras.Model:
 
 
 def build_normalization() -> tf.keras.Model:
+    # Scale pixel values from [0, 255] to [0.0, 1.0]
     return tf.keras.Sequential(
         [tf.keras.layers.Rescaling(1.0 / 255.0)],
         name="normalize",
