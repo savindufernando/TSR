@@ -53,6 +53,7 @@ def main() -> int:
         )
 
         def representative_dataset():
+            # Use a subset of training data for calibration (100 batches is usually sufficient)
             for batch in take_representative_batches(train_ds, max_batches=100):
                 yield [tf.cast(batch[0], tf.float32)]
 
