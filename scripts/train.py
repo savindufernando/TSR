@@ -157,7 +157,9 @@ def main() -> int:
         results = model.evaluate(test_ds, verbose=2)
         print("Test metrics:", dict(zip(model.metrics_names, results)))
     else:
-        print("No test set detected; skipping test evaluation.")
+        print(f"Dataset root: {args.data}")
+    print(f"Output directory: {out_dir}")
+    print(f"Initial learning rate: {args.lr}")
     return 0
 
 
